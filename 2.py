@@ -16,8 +16,17 @@ def index(name):
 
 @app.route('/training/<prof>')
 def training(prof):
-    print(url_for('static', filename='img/mars2.jpeg'))
-    return render_template('index.html', prof=prof)
+    return render_template('index2.html', prof=prof)
+
+
+@app.route('/list_prof/<param>')
+def proffesions(param):
+    list_prof = ['инженер-исследователь', 'пилот', 'строитель', 'экзобиолог',
+                 'врач', 'инженер по терраформированию', 'климатолог',
+                 'специалист по радиационной защите', 'астрогеолог', 'гляциолог',
+                 'инжинер жизнеобеспечения', 'метеоролог', 'оператор марсохода',
+                 'киберинженер', 'штурман', 'пилот дронов']
+    return render_template('index.html', prof=param, news=list_prof)
 
 
 if __name__ == '__main__':

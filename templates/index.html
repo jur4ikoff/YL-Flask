@@ -1,13 +1,11 @@
 {% extends "base.html" %}
 
 {% block content %}
-{% if 'инженер' in prof or 'строитель' in prof %}
-<h2 align="center">Инженерные тренажеры</h2>
-<img src="{{url_for('static', filename='img/mars2.jpg')}}"
-               alt="здесь должна была быть картинка, но не нашлась">
+{% if param == ol%}
+    {% for item in news %}
+    <ol><li>{{item}}</li></ol>
+    {% endfor %}
 {% else %}
-<h2 align="center">Научные симуляторы</h2>
-<img src="{{url_for('static', filename='img/Mars.png')}}"
-               alt="здесь должна была быть картинка, но не нашлась">
+    <h2>ааа</h2>
 {% endif %}
 {% endblock %}
