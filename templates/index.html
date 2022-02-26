@@ -11,8 +11,8 @@
 {% if param == 'ol' %}
     <ul>
         {% for user in user_list %}
-        <li>{{ loop.index }} {{ user }}
-        </li>
+        <div>{{ loop.index }} {{ user }}</div>
+
         {% endfor %}
     </ul>
 {% elif param == 'ul' %}
