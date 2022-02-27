@@ -29,5 +29,10 @@ def login():
     return render_template('form.html', title='Двойная защита', form=form)
 
 
+@app.route('/distribution')
+def distribution():
+    return render_template('cabins.html', title='по каютам')
+
+
 if __name__ == '__main__':
     app.run(port=8081, host='127.0.0.1')
