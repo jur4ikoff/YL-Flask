@@ -1,41 +1,28 @@
 import datetime
-
+from flask import render_template
 from flask import Flask
 from data import db_session
-from data.news import Jobs
+from data.users import User
+from data.news import News
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
 
 
 def main():
-    # db_session.global_init("db/blogs.db")
-    # user = User()
-    # user.surname = "Scott"
-    # user.name = "Ridley"
-    # user.age = 21
-    # user.position = "captain"
-    # user.speciality = "research engineer"
-    # user.address = "module_1"
-    # user.email = "scott_chief@mars.org"
-    # user.hashed_password = "cap"
-    # db_sess = db_session.create_session()
-    # db_sess.add(user)
-    # db_sess.commit()
-
     db_session.global_init("db/blogs.db")
-    job = Jobs()
-    job.team_leader = 1
-    job.job = 'deployment of residential modules 1 and 2'
-    job.work_size = '15'
-    job.collaborators = '2, 3'
-    job.start_date = datetime.datetime.now()
-    job.is_finished = False
-    session = db_session.create_session()
-    session.add(job)
-    session.commit()
+    db_sess = db_session.create_session()
+    for user in db_sess.query(User).all():
+        print(user)
+    app.run()
 
-    # app.run()
+
+
+@app.route("/")
+def index():
+    db_sess = db_session.create_session()
+    news = db_sess.query(News).filter(News.is_private != True)
+    return render_template("index.html", news=news)
 
 
 if __name__ == '__main__':

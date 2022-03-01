@@ -26,7 +26,7 @@ def proffesions(param):
                  'специалист по радиационной защите', 'астрогеолог', 'гляциолог',
                  'инжинер жизнеобеспечения', 'метеоролог', 'оператор марсохода',
                  'киберинженер', 'штурман', 'пилот дронов']
-    return render_template('index.html', param=param, news=list_prof)
+    return render_template('index3.html', param=param, news=list_prof)
 
 
 if __name__ == '__main__':
