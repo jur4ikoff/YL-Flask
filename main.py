@@ -1,42 +1,86 @@
 import datetime
-
-from flask import Flask
+from flask import Flask, render_template, redirect
+from flask_wtf import FlaskForm
+from wtforms import PasswordField, StringField, TextAreaField, SubmitField
+from wtforms import StringField, PasswordField, BooleanField, SubmitField
+from wtforms.validators import DataRequired
 from data import db_session
-from data.news import Jobs
+from data.users import User
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
 
 
-def main():
-    # db_session.global_init("db/blogs.db")
-    # user = User()
-    # user.surname = "Scott"
-    # user.name = "Ridley"
-    # user.age = 21
-    # user.position = "captain"
-    # user.speciality = "research engineer"
-    # user.address = "module_1"
-    # user.email = "scott_chief@mars.org"
-    # user.hashed_password = "cap"
-    # db_sess = db_session.create_session()
-    # db_sess.add(user)
-    # db_sess.commit()
+class LoginForm(FlaskForm):
+    username = StringField('id астронавта', validators=[DataRequired()])
+    password = PasswordField('Пароль астронавта', validators=[DataRequired()])
+    username1 = StringField('id капитана', validators=[DataRequired()])
+    password1 = PasswordField('Пароль капитана', validators=[DataRequired()])
+    submit = SubmitField('Доступ')
 
-    db_session.global_init("db/blogs.db")
-    job = Jobs()
-    job.team_leader = 1
-    job.job = 'deployment of residential modules 1 and 2'
-    job.work_size = '15'
-    job.collaborators = '2, 3'
-    job.start_date = datetime.datetime.now()
-    job.is_finished = False
+
+class RegisterForm(FlaskForm):
+    email = StringField('login/email', validators=[DataRequired()])
+    password = PasswordField('Password', validators=[DataRequired()])
+    password_again = PasswordField('Confirm password', validators=[DataRequired()])
+    surname = StringField('Surname', validators=[DataRequired()])
+    name = StringField('Name', validators=[DataRequired()])
+    age = StringField("Age")
+    position = StringField("position")
+    speciality = StringField("Speciality")
+    address = StringField("Address")
+    submit = SubmitField('Войти')
+
+
+@app.route('/')
+def index():
+    return '''hello world'''
+
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    form = LoginForm()
+    if form.validate_on_submit():
+        pass
+        return redirect('/success')
+    return render_template('form.html', title='Двойная защита', form=form)
+
+
+@app.route('/distribution')
+def distribution():
+    return render_template('cabins.html', title='по каютам')
+
+
+@app.route('/register', methods=['GET', 'POST'])
+def reqister():
+    db_session.global_init("db/register.db")
     session = db_session.create_session()
-    session.add(job)
-    session.commit()
-
-    # app.run()
+    form = RegisterForm()
+    if form.validate_on_submit():
+        if form.password.data != form.password_again.data:
+            return render_template('register.html', title='Регистрация',
+                                   form=form,
+                                   message="Пароли не совпадают")
+        db_sess = db_session.create_session()
+        if db_sess.query(User).filter(User.email == form.email.data).first():
+            return render_template('register.html', title='Регистрация',
+                                   form=form,
+                                   message="Такой пользователь уже есть")
+        user = User()
+        user.email = form.email.data
+        user.surname = form.surname.data
+        user.name = form.name.data
+        user.age = form.age.data
+        user.position = form.position.data
+        user.speciality = form.speciality.data
+        user.address = form.address.data
+        user.set_password(form.password.data)
+        session.add(user)
+        session.commit()
+        return redirect('/login')
+    return render_template('register.html', title='Регистрация', form=form)
 
 
 if __name__ == '__main__':
-    main()
+    app.run(port=8081, host='127.0.0.1')
+    # main()
