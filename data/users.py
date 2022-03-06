@@ -14,13 +14,13 @@ class User(SqlAlchemyBase):
     email = sqlalchemy.Column(sqlalchemy.String,
                               index=True, unique=True, nullable=True)
     age = sqlalchemy.Column(sqlalchemy.Integer,
-                            index=True, unique=True, nullable=True)
+                            index=True, nullable=True)
     position = sqlalchemy.Column(sqlalchemy.String,
-                                 index=True, unique=True, nullable=True)
+                                 index=True, nullable=True)
     speciality = sqlalchemy.Column(sqlalchemy.String,
-                                   index=True, unique=True, nullable=True)
+                                   index=True, nullable=True)
     address = sqlalchemy.Column(sqlalchemy.String,
-                                index=True, unique=True, nullable=True)
+                                index=True, nullable=True)
     hashed_password = sqlalchemy.Column(sqlalchemy.String, nullable=True)
     created_date = sqlalchemy.Column(sqlalchemy.DateTime,
                                      default=datetime.datetime.now)
