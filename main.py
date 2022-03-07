@@ -1,5 +1,5 @@
 import datetime
-from flask import Flask, render_template, redirect
+from flask import Flask, render_template, redirect, request, make_response, url_for
 from flask_wtf import FlaskForm
 from wtforms import PasswordField, StringField, TextAreaField, SubmitField
 from wtforms import StringField, PasswordField, BooleanField, SubmitField
@@ -79,6 +79,36 @@ def reqister():
         session.commit()
         return redirect('/login')
     return render_template('register.html', title='Регистрация', form=form)
+
+
+@app.route('/sample_page')
+def return_sample_page():
+    return f"""<!doctype html>
+                <html lang="en">
+                  <head>
+                    <meta charset="utf-8">
+                    <link rel="stylesheet" type="text/css" href="{url_for('static', filename='css/gray_title.css')}" />
+                    <title>Привет, Яндекс!</title>
+                  </head>
+                  <body>
+                    <h1>Первая HTML-страница</h1>
+                  </body>
+                </html>"""
+
+
+@app.route("/cookie_test")
+def cookie_test():
+    visits_count = int(request.cookies.get("visits_count", 0))
+    if visits_count:
+        res = make_response(render_template('cookie_test.html', title='cookie test', visits_count=visits_count))
+        res.set_cookie("visits_count", str(visits_count + 1),
+                       max_age=60 * 60 * 24 * 365 * 2)
+    else:
+        res = make_response(
+            "Вы пришли на эту страницу в первый раз за последние 2 года")
+        res.set_cookie("visits_count", '1',
+                       max_age=60 * 60 * 24 * 365 * 2)
+    return res
 
 
 if __name__ == '__main__':
