@@ -2,21 +2,44 @@ import datetime
 from flask import Flask, render_template, redirect, request, make_response, url_for
 from flask_wtf import FlaskForm
 from wtforms import PasswordField, StringField, TextAreaField, SubmitField
+import flask.sessions
+from flask_login import LoginManager, login_user
 from wtforms import StringField, PasswordField, BooleanField, SubmitField
 from wtforms.validators import DataRequired
 from data import db_session
 from data.users import User
+from data.news import News
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
+login_manager = LoginManager()
+login_manager.init_app(app)
+
+
+def db_create():
+    db_session.global_init("db/register.db")
+    job = News()
+    job.title = 'Test1'
+    job.content = 'Test1 content'
+    job.is_private = False
+    job.user_id = 1
+    job.created_date = datetime.datetime.now()
+    session = db_session.create_session()
+    session.add(job)
+    session.commit()
+
+
+@login_manager.user_loader
+def load_user(user_id):
+    db_sess = db_session.create_session()
+    return db_sess.query(User).get(user_id)
 
 
 class LoginForm(FlaskForm):
-    username = StringField('id астронавта', validators=[DataRequired()])
-    password = PasswordField('Пароль астронавта', validators=[DataRequired()])
-    username1 = StringField('id капитана', validators=[DataRequired()])
-    password1 = PasswordField('Пароль капитана', validators=[DataRequired()])
-    submit = SubmitField('Доступ')
+    email = StringField('Почта', validators=[DataRequired()])
+    password = PasswordField('Пароль', validators=[DataRequired()])
+    remember_me = BooleanField('Запомнить меня')
+    submit = SubmitField('Войти')
 
 
 class RegisterForm(FlaskForm):
@@ -31,19 +54,33 @@ class RegisterForm(FlaskForm):
     address = StringField("Address")
     submit = SubmitField('Войти')
 
+@app.route('/index')
+def index1():
+    return "И на Марсе будут яблони цвести!"
+
 
 @app.route('/')
 def index():
-    return '''hello world'''
+    db_session.global_init("db/register.db")
+    db_sess = db_session.create_session()
+    news = db_sess.query(News).filter(News.is_private != True)
+    return render_template("index.html", news=news)
 
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+    db_session.global_init("db/register.db")
     form = LoginForm()
     if form.validate_on_submit():
-        pass
-        return redirect('/success')
-    return render_template('form.html', title='Двойная защита', form=form)
+        db_sess = db_session.create_session()
+        user = db_sess.query(User).filter(User.email == form.email.data).first()
+        if user and user.check_password(form.password.data):
+            login_user(user, remember=form.remember_me.data)
+            return redirect("/")
+        return render_template('login.html',
+                               message="Неправильный логин или пароль",
+                               form=form)
+    return render_template('login.html', title='Авторизация', form=form)
 
 
 @app.route('/distribution')
@@ -113,4 +150,4 @@ def cookie_test():
 
 if __name__ == '__main__':
     app.run(port=8081, host='127.0.0.1')
-    # main()
+    # db_create()
