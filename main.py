@@ -71,7 +71,26 @@ def works_logs():
     db_session.global_init("db/register.db")
     session = db_session.create_session()
     job = session.query(Jobs)
-    return render_template("jobs.html", job=job)
+    return render_template("index_jobs.html", job=job)
+
+
+@app.route('/add_job', methods=['GET', 'POST'])
+@login_required
+def add_job():
+    form = AddWork()
+    if form.validate_on_submit():
+        session = db_session.create_session()
+        jobs = Jobs()
+        jobs.job = form.job.data
+        jobs.team_leader = current_user.id
+        jobs.work_size = form.work_size.data
+        jobs.collaborators = form.collaborators.data
+        jobs.is_finished = form.is_finished.data
+        current_user.jobs.append(jobs)
+        session.merge(current_user)
+        session.commit()
+        return redirect('/')
+    return render_template('jobs.html', title='Добавление работы', form=form)
 
 
 @login_manager.user_loader
@@ -180,7 +199,7 @@ def cookie_test():
     return res
 
 
-@app.route('/news', methods=['GET', 'POST'])
+@app.route('/add_news', methods=['GET', 'POST'])
 @login_required
 def add_news():
     form = NewsForm()
@@ -193,7 +212,7 @@ def add_news():
         current_user.news.append(news)
         db_sess.merge(current_user)
         db_sess.commit()
-        return redirect('/')
+        return redirect('/news')
     return render_template('news.html', title='Добавление новости',
                            form=form)
 
@@ -238,7 +257,7 @@ def edit_news(id):
             news.content = form.content.data
             news.is_private = form.is_private.data
             db_sess.commit()
-            return redirect('/')
+            return redirect('/news')
         else:
             abort(404)
     return render_template('news.html',
