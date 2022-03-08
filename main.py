@@ -10,6 +10,7 @@ from wtforms.validators import DataRequired
 from data import db_session
 from data.users import User
 from data.news import News
+from data.jobs import Jobs
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
@@ -28,6 +29,14 @@ def db_create():
     session = db_session.create_session()
     session.add(job)
     session.commit()
+
+
+class AddWork(FlaskForm):
+    job = StringField('Название', validators=[DataRequired()])
+    work_size = StringField("Продолжительность", validators=[DataRequired()])
+    collaborators = StringField("Список id команды", validators=[DataRequired()])
+    is_finished = BooleanField('Завершена ли работа?')
+    submit = SubmitField('Применить')
 
 
 class NewsForm(FlaskForm):
@@ -57,18 +66,21 @@ class RegisterForm(FlaskForm):
     submit = SubmitField('Войти')
 
 
+@app.route('/')
+def works_logs():
+    db_session.global_init("db/register.db")
+    session = db_session.create_session()
+    job = session.query(Jobs)
+    return render_template("jobs.html", job=job)
+
+
 @login_manager.user_loader
 def load_user(user_id):
     db_sess = db_session.create_session()
     return db_sess.query(User).get(user_id)
 
 
-@app.route('/index')
-def index1():
-    return "И на Марсе будут яблони цвести!"
-
-
-@app.route('/')
+@app.route('/news')
 def index():
     db_session.global_init("db/register.db")
     db_sess = db_session.create_session()
@@ -236,5 +248,5 @@ def edit_news(id):
 
 
 if __name__ == '__main__':
-    app.run(port=8081, host='127.0.0.1')
+    app.run(port=8080, host='127.0.0.1')
     # db_create()
