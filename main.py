@@ -97,6 +97,20 @@ def edit_works_log(id):
     return render_template('jobs.html', title='Редактирование', form=form)
 
 
+@app.route('/del_job/<int:id>', methods=['GET', 'POST'])
+@login_required
+def delete_job(id):
+    session = db_session.create_session()
+    jobs = session.query(Jobs).filter(Jobs.id == id, ((Jobs.team_leader == current_user.id) |
+                                                      (current_user.id == 1))).first()
+    if jobs:
+        session.delete(jobs)
+        session.commit()
+    else:
+        abort(404)
+    return redirect('/')
+
+
 @app.route('/')
 def works_logs():
     db_session.global_init("db/register.db")
