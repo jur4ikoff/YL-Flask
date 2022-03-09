@@ -66,6 +66,37 @@ class RegisterForm(FlaskForm):
     submit = SubmitField('Войти')
 
 
+@app.route('/edit_job/<int:id>', methods=['GET', 'POST'])
+@login_required
+def edit_works_log(id):
+    form = AddWork()
+    if request.method == "GET":
+        session = db_session.create_session()
+        jobs = session.query(Jobs).filter(Jobs.id == id, ((Jobs.team_leader == current_user.id) |
+                                                          (current_user.id == 1))).first()
+        if jobs:
+            form.job.data = jobs.job
+            form.work_size.data = jobs.work_size
+            form.collaborators.data = jobs.collaborators
+            form.is_finished.data = jobs.is_finished
+        else:
+            abort(404)
+    if form.validate_on_submit():
+        session = db_session.create_session()
+        jobs = session.query(Jobs).filter(Jobs.id == id, ((Jobs.team_leader == current_user.id) |
+                                                          (current_user.id == 1))).first()
+        if jobs:
+            jobs.job = form.job.data
+            jobs.work_size = form.work_size.data
+            jobs.collaborators = form.collaborators.data
+            jobs.is_finished = form.is_finished.data
+            session.commit()
+            return redirect('/')
+        else:
+            abort(404)
+    return render_template('jobs.html', title='Редактирование', form=form)
+
+
 @app.route('/')
 def works_logs():
     db_session.global_init("db/register.db")
@@ -90,7 +121,7 @@ def add_job():
         session.merge(current_user)
         session.commit()
         return redirect('/')
-    return render_template('jobs.html', title='Добавление работы', form=form)
+    return render_template('jobs.html', title='Добавление', form=form)
 
 
 @login_manager.user_loader
