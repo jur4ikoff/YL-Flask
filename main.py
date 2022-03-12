@@ -7,7 +7,8 @@ from wtforms.validators import DataRequired
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 from wtforms import StringField, PasswordField, BooleanField, SubmitField
 from wtforms.validators import DataRequired
-from data import db_session
+from data import db_session, news_api
+import sqlalchemy_serializer
 from data.users import User
 from data.news import News
 from data.jobs import Jobs
@@ -17,6 +18,10 @@ app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
 login_manager = LoginManager()
 login_manager.init_app(app)
 
+def api():
+    db_session.global_init("db/register.db")
+    app.register_blueprint(news_api.blueprint)
+    app.run(port=8080, host='127.0.0.1')
 
 def db_create():
     db_session.global_init("db/register.db")
@@ -312,5 +317,6 @@ def edit_news(id):
 
 
 if __name__ == '__main__':
-    app.run(port=8080, host='127.0.0.1')
-    # db_create()
+    api()
+    #app.run(port=8080, host='127.0.0.1')
+    #
