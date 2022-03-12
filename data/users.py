@@ -1,7 +1,6 @@
 import datetime
 import sqlalchemy
 from sqlalchemy import orm
-import sqlalchemy_serializer
 from sqlalchemy_serializer import SerializerMixin
 from .db_session import SqlAlchemyBase
 from werkzeug.security import generate_password_hash, check_password_hash

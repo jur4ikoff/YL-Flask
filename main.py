@@ -8,7 +8,6 @@ from flask_login import LoginManager, login_user, logout_user, login_required, c
 from wtforms import StringField, PasswordField, BooleanField, SubmitField
 from wtforms.validators import DataRequired
 from data import db_session, news_api
-import sqlalchemy_serializer
 from data.users import User
 from data.news import News
 from data.jobs import Jobs
