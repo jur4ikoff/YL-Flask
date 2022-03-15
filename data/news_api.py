@@ -13,11 +13,6 @@ blueprint = flask.Blueprint(
 )
 
 
-# @app.errorhandler(404)
-# def not_found(error):
-#     return make_response(jsonify({'error': 'Not found'}), 404)
-
-
 @blueprint.route('/api/news')
 def get_news():
     db_sess = db_session.create_session()
@@ -52,7 +47,7 @@ def get_jobs():
     return jsonify(
         {
             'jobs':
-                [item.to_dict()
-                 for item in jobs]
+                [item_jobs.to_dict(only=('team_leader', 'job', 'work_size', 'collaborators', 'is_finished'))
+                 for item_jobs in jobs]
         }
     )

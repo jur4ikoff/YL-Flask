@@ -1,5 +1,5 @@
 import datetime
-from flask import Flask, render_template, redirect, request, make_response, url_for, abort
+from flask import Flask, render_template, redirect, request, make_response, url_for, abort, jsonify
 from flask_wtf import FlaskForm
 from wtforms import PasswordField, StringField, TextAreaField, SubmitField
 from flask.sessions import *
@@ -16,6 +16,12 @@ app = Flask(__name__)
 app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
 login_manager = LoginManager()
 login_manager.init_app(app)
+
+
+@app.errorhandler(404)
+def not_found(error):
+    return make_response(jsonify({'error': 'Not found'}), 404)
+
 
 def api():
     db_session.global_init("db/register.db")
