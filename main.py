@@ -18,15 +18,8 @@ app.config['SECRET_KEY'] = 'yandexlyceum_secret_key'
 api = Api(app)
 login_manager = LoginManager()
 login_manager.init_app(app)
-api.add_resource(news_resources.NewsListResource, '/api/v2/news')
-api.add_resource(news_resources.NewsResource, '/api/v2/news/<int:news_id>')
-
-@app.errorhandler(404)
-def abort_if_news_not_found(news_id):
-    session = db_session.create_session()
-    news = session.query(News).get(news_id)
-    if not news:
-        abort(404, message=f"Jobs not found")
+api.add_resource(news_resources.NewsListResource, '/api/news')
+api.add_resource(news_resources.NewsResource, '/api/news/<int:news_id>')
 
 
 # def api():

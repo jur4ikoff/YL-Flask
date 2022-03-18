@@ -6,7 +6,6 @@ from . import db_session
 from .news import News
 from .jobs import Jobs
 from flask import make_response
-from main import abort_if_news_not_found
 from flask_restful import reqparse, abort, Api, Resource
 
 parser = reqparse.RequestParser()
@@ -15,6 +14,13 @@ parser.add_argument('content', required=True)
 parser.add_argument('is_private', required=True, type=bool)
 parser.add_argument('is_published', required=True, type=bool)
 parser.add_argument('user_id', required=True, type=int)
+db_session.global_init("db/register.db")
+
+def abort_if_news_not_found(news_id):
+    session = db_session.create_session()
+    news = session.query(News).get(news_id)
+    if not news:
+        abort(404, message=f"Jobs not found")
 
 class NewsResource(Resource):
     def get(self, news_id):

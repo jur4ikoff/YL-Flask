@@ -33,9 +33,7 @@ import random
 #                  'collaborators': '2, 4, 6',
 #                  'is_finished': 1}).json())
 
-print(delete('http://127.0.0.1:8070/api/jobs/999').json())
-# новости с id = 999 нет в базе
 
-print(delete('http://127.0.0.1:8070/api/jobs/3').json())
+print(delete('http://127.0.0.1:8070/api/news/4').json())
 
-print(get('http://127.0.0.1:8070/api/jobs'))
+print(get('http://127.0.0.1:8070/api/news'))
