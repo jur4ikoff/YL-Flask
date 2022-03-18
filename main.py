@@ -8,7 +8,7 @@ from wtforms.validators import DataRequired
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 from wtforms import StringField, PasswordField, BooleanField, SubmitField
 from wtforms.validators import DataRequired
-from data import db_session, news_api, news_resources
+from data import db_session, news_api, news_resources, users_resource
 from data.users import User
 from data.news import News
 from data.jobs import Jobs
@@ -20,6 +20,9 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 api.add_resource(news_resources.NewsListResource, '/api/news')
 api.add_resource(news_resources.NewsResource, '/api/news/<int:news_id>')
+
+api.add_resource(users_resource.UsersListResource, '/api/user')
+api.add_resource(users_resource.UsersResource, '/api/user/<int:user_id>')
 
 
 # def api():
