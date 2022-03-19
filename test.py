@@ -34,17 +34,11 @@ import random
 #                  'is_finished': 1}).json())
 
 
-print(get('http://127.0.0.1:8070/api/user').json())  # есть в базе
-# print(get('http://127.0.0.1:8070/api/user/999').json())  # нет в базе
-# print(get('http://127.0.0.1:8070/api/news'))
+print(get('http://127.0.0.1:8070/api/job').json())  # есть в базе
+print(get('http://127.0.0.1:8070/api/job/999').json())  # нет в базе
+# print(delete('http://127.0.0.1:8070/api/job/4'))  # успешное удаление
 
-# print(delete('http://127.0.0.1:8070/api/user/4'))  # успешное удаление
-
-print(post('http://127.0.0.1:8070/api/user', json={'name': 'test_user1',  # УДАЧНОЕ
-                                                   'surname': 'dsfdssda',
-                                                   'email': 'test_user11@gmail.com',
-                                                   'password': 'Qwerty1234',
-                                                   'age': 17,
-                                                   'speciality': 'test1',
-                                                   "position": 'test1',
-                                                   'address': 'test1'}))
+print(post('http://127.0.0.1:8070/api/job', json={'team_leader': 'ikjhgfds',  # УДАЧНОЕ
+                                                  'job': 'test job',
+                                                  'work_size': '12',
+                                                  'collaborators': 'hygfd'}))
