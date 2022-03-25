@@ -9,6 +9,7 @@ from flask_login import LoginManager, login_user, logout_user, login_required, c
 from wtforms import StringField, PasswordField, BooleanField, SubmitField
 from wtforms.validators import DataRequired
 from data import db_session, news_api, news_resources, users_resource, jobs_resource
+import os
 from data.users import User
 from data.news import News
 from data.jobs import Jobs
@@ -328,5 +329,6 @@ def edit_news(id):
 
 if __name__ == '__main__':
     # api()
+    port = int(os.environ.get("PORT", 8070))
     app.run(port=8070, host='127.0.0.1')
     #
